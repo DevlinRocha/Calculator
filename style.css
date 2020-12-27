@@ -1,0 +1,175 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    background-color: black;
+    max-height: 100vh;
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+#main {
+    position: fixed;
+    min-height: 100%;
+    min-width: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas:
+    "display display display display"
+    "number-7 number-8 number-9 clear"
+    "number-4 number-5 number-6 operator-divide"
+    "number-1 number-2 number-3 operator-multiply"
+    "number-0 operator-equals operator-plus operator-minus";
+    background: white;
+}
+
+#display-value {
+    grid-area: display;
+    display: flex;
+    flex-direction: row;
+    min-height: 100%;
+    min-width: 100%;
+    color: white;
+    font-size: 50px;
+    max-height: 100%;
+    max-width: 100%;
+    justify-content: flex-end;
+    align-items: flex-end;
+    background-color: black;
+}
+
+button {
+    border: 1px solid black;
+    font-size: 17px;
+    background-color: gray;
+    color: black;
+}
+/*
+#display-value {
+    min-height: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    text-align: end;
+    vertical-align: bottom;
+}
+*/
+
+
+button:hover {
+    opacity: 0.5;
+}
+
+#clear-button {
+    grid-area: clear;
+    min-height: 100%;
+    min-width: 100%;
+    background-color: gainsboro;
+}
+
+#number-button-9 {
+    grid-area: number-9;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-8 {
+    grid-area: number-8;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-7 {
+    grid-area: number-7;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-6 {
+    grid-area: number-6;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-5 {
+    grid-area: number-5;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-4 {
+    grid-area: number-4;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-3 {
+    grid-area: number-3;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-2 {
+    grid-area: number-2;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-1 {
+    grid-area: number-1;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#number-button-0 {
+    grid-area: number-0;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#equals-button {
+    background-color: orange;
+}
+
+.operator-button {
+    background-color: orange;
+}
+
+#operator-button-plus {
+    grid-area: operator-plus;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#operator-button-minus {
+    grid-area: operator-minus;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#operator-button-multiply {
+    grid-area: operator-multiply;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#operator-button-divide {
+    grid-area: operator-divide;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#operator-button-equals {
+    grid-area: operator-equals;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+.active {
+    background-color: white;
+}
