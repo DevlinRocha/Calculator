@@ -19,13 +19,14 @@ html {
     max-width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1.5fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas:
     "display display display display"
-    "number-7 number-8 number-9 clear"
-    "number-4 number-5 number-6 operator-divide"
-    "number-1 number-2 number-3 operator-multiply"
-    "number-0 operator-equals operator-plus operator-minus";
+    "clear negative percentage operator-divide"
+    "number-7 number-8 number-9 operator-multiply"
+    "number-4 number-5 number-6 operator-minus"
+    "number-1 number-2 number-3 operator-plus"
+    "number-0 number-0 number-decimal operator-equals";
     background: white;
 }
 
@@ -60,6 +61,9 @@ button {
 }
 */
 
+.function-button {
+    background-color: gainsboro;
+}
 
 button:hover {
     opacity: 0.5;
@@ -69,7 +73,14 @@ button:hover {
     grid-area: clear;
     min-height: 100%;
     min-width: 100%;
-    background-color: gainsboro;
+}
+
+#negative-button {
+    grid-area: negative;
+}
+
+#percentage-button {
+    grid-area: percentage;
 }
 
 #number-button-9 {
@@ -132,7 +143,14 @@ button:hover {
     min-width: 100%;
 }
 
+#decimal-button {
+    grid-area: number-decimal;
+}
+
 #equals-button {
+    grid-area: operator-equals;
+    min-height: 100%;
+    min-width: 100%;
     background-color: orange;
 }
 
@@ -160,12 +178,6 @@ button:hover {
 
 #operator-button-divide {
     grid-area: operator-divide;
-    min-height: 100%;
-    min-width: 100%;
-}
-
-#operator-button-equals {
-    grid-area: operator-equals;
     min-height: 100%;
     min-width: 100%;
 }

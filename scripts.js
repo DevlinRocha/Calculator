@@ -5,6 +5,8 @@ const clearButton = document.querySelector('#clear-button');
 const numberButtons = document.querySelectorAll('.number-button');
 const operatorButtons = document.querySelectorAll('.operator-button');
 const equalsButton = document.querySelector('#equals-button');
+const negativeButton = document.querySelector('#negative-button');
+const percentButton = document.querySelector('#percent-button');
 
 let displayValue = 0;
 let num1 = 0;
@@ -29,7 +31,7 @@ function divide(num1, num2) {
     return Number(num1) / Number(num2);
 };
 
-function operate(operator) { // MAYBE REMOVE NUM1 NUM2
+function operate(operator) {
     switch (operator) {
         case "+":
             return Number(add(num1, num2));
@@ -50,8 +52,14 @@ function operate(operator) { // MAYBE REMOVE NUM1 NUM2
 
 function updateDisplay() {
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-    displayValue += this.dataset.value;
-    display.textContent = Number(displayValue);
+    if (this.dataset.value === '.') {
+        displayValue += this.dataset.value;
+        display.textContent = displayValue;
+    } else {
+        displayValue += this.dataset.value;
+        display.textContent = Number(displayValue);
+        displayValue = Number(displayValue);
+    }
 };
 
 function equals() {
@@ -60,7 +68,7 @@ function equals() {
         num1 = operate(operator);
         num2 = 0; // new
     } else {
-        num1 = operate(operator); //MAYBE REMOVE NUM1 NUM2
+        num1 = operate(operator);
         num2 = 0; // new
     }
     //displayValue = 0;
@@ -96,9 +104,23 @@ function allClear() {
     operator = '';
 }
 
+// NEW FUNCTIONS:
+
+function negative() {
+    displayValue = Number(displayValue) * -1;
+    display.textContent = displayValue;
+}
+
+function percentage() {
+    displayValue = Number(displayValue) * .01;
+    display.textContent = displayValue;
+}
+
 // EVENTS:
 
 clearButton.addEventListener('click', allClear);
 numberButtons.forEach((numberButton) => numberButton.addEventListener('click', updateDisplay));
 equalsButton.addEventListener('click', equals);
 operatorButtons.forEach((operatorButton) => operatorButton.addEventListener('click', operation));
+negativeButton.addEventListener('click', negative);
+percentButton.addEventListener('click', percentage);
