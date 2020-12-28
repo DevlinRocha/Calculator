@@ -29,7 +29,7 @@ function divide(num1, num2) {
     return Number(num1) / Number(num2);
 };
 
-function operate(operator, num1, num2) { // MAYBE REMOVE NUM1 NUM2
+function operate(operator) { // MAYBE REMOVE NUM1 NUM2
     switch (operator) {
         case "+":
             return Number(add(num1, num2));
@@ -57,10 +57,10 @@ function updateDisplay() {
 function equals() {
     if (num2 === 0) {
         num2 = Number(displayValue);
-        num1 = operate(operator, num1, num2);
+        num1 = operate(operator);
         num2 = 0; // new
     } else {
-        num1 = operate(operator, num1, num2); //MAYBE REMOVE NUM1 NUM2
+        num1 = operate(operator); //MAYBE REMOVE NUM1 NUM2
         num2 = 0; // new
     }
     //displayValue = 0;
@@ -77,7 +77,7 @@ function operation() {
         num1 = Number(displayValue);
     } else if (num2 === 0) {
         num2 = Number(displayValue);
-        operate(operator, num1, num2);
+        num1 = operate(operator);
             // THESE ARE FROM OPERATE() {
         displayValue = Number(num1);
         display.textContent = Number(displayValue);
