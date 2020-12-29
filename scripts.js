@@ -53,13 +53,17 @@ function operate(operator) {
 function updateDisplay() {
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     if (this.dataset.value === '.') {
-        displayValue += this.dataset.value;
-        display.textContent = displayValue;
+        if (String(displayValue).indexOf('.') !== -1) {
+            return;
+        } else {
+            displayValue += this.dataset.value;
+            display.textContent = displayValue;
+        }
     } else {
         displayValue += this.dataset.value;
         display.textContent = Number(displayValue);
         displayValue = Number(displayValue);
-    }
+    };
 };
 
 function equals() {
@@ -71,27 +75,29 @@ function equals() {
         num1 = operate(operator);
         num2 = 0; // new
     }
-    //displayValue = 0;
-
+    
     //THESE ARE FROM OPERATE() {
-    displayValue = Number(num1);
-    display.textContent = Number(displayValue);
-}
+        displayValue = Number(num1);
+        display.textContent = Number(displayValue);
+        
+        // need this?????
+        displayValue = 0;
+};
 
 function operation() {
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     this.classList.toggle('active');
+    operator = this.dataset.value;
     if (num1 === 0) {
         num1 = Number(displayValue);
     } else if (num2 === 0) {
         num2 = Number(displayValue);
         num1 = operate(operator);
-            // THESE ARE FROM OPERATE() {
-        displayValue = Number(num1);
-        display.textContent = Number(displayValue);
-        num2 = 0; // new
-    }
-    operator = this.dataset.value;
+        // THESE ARE FROM OPERATE() {
+            displayValue = Number(num1);
+            display.textContent = Number(displayValue);
+            num2 = 0; // new
+        }
     displayValue = 0;
 }
 
