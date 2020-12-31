@@ -50,38 +50,62 @@ function operate(operator) {
     display.textContent = Number(displayValue);
 };
 
-function updateDisplay() {
+function updateDisplay(e) {
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-    if (this.dataset.value === '.') {
+    let updateValue;
+    if (e.type === 'keydown') {
+        e.preventDefault();
+        e.stopPropagation();
+        let key = document.querySelector(`button[data-key="${e.keyCode}"]`);
+        if (key.classList.contains('number-button')) {
+            updateValue = key.dataset.value;
+        } else if (key.classList.contains('operator-button')) {
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            key.classList.toggle('active');
+            operator = key.dataset.value;
+            if (num1 === 0) {
+                num1 = Number(displayValue);
+            } else if (num2 === 0) {
+                num2 = Number(displayValue);
+                num1 = operate(operator);
+                displayValue = Number(num1);
+                return display.textContent = Number(displayValue);
+                //return num2 = 0;
+            }
+            return displayValue = 0;
+        } else if (key.classList.contains('calculator-button')) {
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            return equals();
+        }
+    } else {
+        updateValue = this.dataset.value;
+    }
+    if (updateValue === '.') {
         if (String(displayValue).indexOf('.') !== -1) {
             return;
         } else {
-            displayValue += this.dataset.value;
+            displayValue += updateValue;
             display.textContent = displayValue;
         }
     } else {
-        displayValue += this.dataset.value;
+        displayValue += updateValue;
         display.textContent = Number(displayValue);
         displayValue = Number(displayValue);
     };
 };
 
 function equals() {
-    if (num2 === 0) {
-        num2 = Number(displayValue);
-        num1 = operate(operator);
-        num2 = 0; // new
-    } else {
-        num1 = operate(operator);
-        num2 = 0; // new
-    }
-    
-    //THESE ARE FROM OPERATE() {
-        displayValue = Number(num1);
-        display.textContent = Number(displayValue);
-        
-        // need this?????
-        displayValue = 0;
+    //if (num1 === 0) {
+        //    num1 = Number(displayValue);
+        //} else if (num2 === 0) {
+            //    num2 = Number(displayValue);
+            //};
+    num2 = Number(displayValue);
+    num1 = operate(operator);
+    displayValue = Number(num1);
+    display.textContent = Number(displayValue);
+    //displayValue = 0;
+    //num2 = 0;
 };
 
 function operation() {
@@ -93,12 +117,11 @@ function operation() {
     } else if (num2 === 0) {
         num2 = Number(displayValue);
         num1 = operate(operator);
-        // THESE ARE FROM OPERATE() {
-            displayValue = Number(num1);
-            display.textContent = Number(displayValue);
-            num2 = 0; // new
+        displayValue = Number(num1);
+        display.textContent = Number(displayValue);
+        //num2 = 0;
         }
-    displayValue = 0;
+    //displayValue = 0;
 }
 
 function allClear() {
@@ -123,6 +146,8 @@ function percentage() {
 }
 
 // EVENTS:
+
+window.addEventListener('keydown', updateDisplay)
 
 clearButton.addEventListener('click', allClear);
 numberButtons.forEach((numberButton) => numberButton.addEventListener('click', updateDisplay));
