@@ -153,8 +153,15 @@ function backspace() {
         let newValue = String(displayValue).slice(0,-1);
         displayValue = Number(newValue);
         display.textContent = displayValue;
-    }
-}
+    } else {
+        backspaceButton.style.backgroundColor = "red";
+        setTimeout(function() {
+            backspaceButton.style.backgroundColor = "gainsboro";
+        }, 500);
+    };
+};
+
+//backspaceButton.style.color = red;
 
 // EVENTS:
 
