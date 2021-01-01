@@ -33,6 +33,7 @@ function divide(num1, num2) {
 };
 
 function operate(operator) {
+    backspaceButton.dataset.work = 0;
     switch (operator) {
         case "+":
             return Number(add(num1, num2));
@@ -59,6 +60,7 @@ function updateDisplay(e) {
         let key = document.querySelector(`button[data-key="${e.keyCode}"]`);
         if (key.classList.contains('number-button')) {
             updateValue = key.dataset.value;
+            backspaceButton.dataset.work = 1;
         } else if (key.classList.contains('operator-button')) {
             operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
             key.classList.toggle('active');
@@ -74,8 +76,9 @@ function updateDisplay(e) {
             }
             return displayValue = 0;
         } else if (key.classList.contains('calculator-button')) {
-            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
             return equals();
+        } else if (key.classList.contains('backspace-button')) {
+            return backspace();
         }
     } else {
         updateValue = this.dataset.value;
@@ -146,9 +149,11 @@ function percentage() {
 }
 
 function backspace() {
-    newValue = String(displayValue).slice(0,-1);
-    displayValue = Number(newValue);
-    display.textContent = displayValue;
+    if (backspaceButton.dataset.work > 0) {
+        let newValue = String(displayValue).slice(0,-1);
+        displayValue = Number(newValue);
+        display.textContent = displayValue;
+    }
 }
 
 // EVENTS:
