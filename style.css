@@ -21,13 +21,13 @@ html {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1.5fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas:
-    "display display display display"
+    "display display display backspace"
     "clear negative percentage operator-divide"
     "number-7 number-8 number-9 operator-multiply"
     "number-4 number-5 number-6 operator-minus"
     "number-1 number-2 number-3 operator-plus"
     "number-0 number-0 number-decimal operator-equals";
-    background: white;
+    background-color: white;
 }
 
 #display-value {
@@ -67,6 +67,22 @@ button {
 
 button:hover {
     opacity: 0.5;
+}
+
+#backspace-button-container {
+    grid-area: backspace;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    background-color: black;
+}
+
+#backspace-button {
+    background-color: gainsboro;
+    height: 25%;
+    width: 30%;
+    border-radius: 42%;
+    margin: 10px;
 }
 
 #clear-button {

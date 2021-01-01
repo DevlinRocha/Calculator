@@ -7,6 +7,7 @@ const operatorButtons = document.querySelectorAll('.operator-button');
 const equalsButton = document.querySelector('#equals-button');
 const negativeButton = document.querySelector('#negative-button');
 const percentButton = document.querySelector('#percent-button');
+const backspaceButton = document.querySelector('#backspace-button');
 
 let displayValue = 0;
 let num1 = 0;
@@ -55,7 +56,6 @@ function updateDisplay(e) {
     let updateValue;
     if (e.type === 'keydown') {
         e.preventDefault();
-        e.stopPropagation();
         let key = document.querySelector(`button[data-key="${e.keyCode}"]`);
         if (key.classList.contains('number-button')) {
             updateValue = key.dataset.value;
@@ -145,10 +145,16 @@ function percentage() {
     display.textContent = displayValue;
 }
 
+function backspace() {
+    newValue = String(displayValue).slice(0,-1);
+    displayValue = Number(newValue);
+    display.textContent = displayValue;
+}
+
 // EVENTS:
 
-window.addEventListener('keydown', updateDisplay)
-
+window.addEventListener('keydown', updateDisplay);
+backspaceButton.addEventListener('click', backspace);
 clearButton.addEventListener('click', allClear);
 numberButtons.forEach((numberButton) => numberButton.addEventListener('click', updateDisplay));
 equalsButton.addEventListener('click', equals);
