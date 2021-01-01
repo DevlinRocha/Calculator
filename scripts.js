@@ -82,6 +82,7 @@ function updateDisplay(e) {
         }
     } else {
         updateValue = this.dataset.value;
+        backspaceButton.dataset.work = 1;
     }
     if (updateValue === '.') {
         if (String(displayValue).indexOf('.') !== -1) {
