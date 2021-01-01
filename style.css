@@ -82,7 +82,7 @@ button:hover {
     height: 25%;
     width: 30%;
     border-radius: 42%;
-    margin: 10px;
+    margin: 0 10px 10px 0;
 }
 
 #clear-button {
