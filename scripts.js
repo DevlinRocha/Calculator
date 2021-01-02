@@ -55,7 +55,12 @@ function operate(operator) {
 
 
 function backspace() {
-    if (backspaceButton.dataset.work > 0) {
+    if (displayValue === 0) {
+        backspaceButton.style.backgroundColor = "red";
+        setTimeout(function() {
+            backspaceButton.style.backgroundColor = "gainsboro";
+        }, 500);
+    } else if (backspaceButton.dataset.work > 0) {
         let newValue = String(displayValue).slice(0,-1);
         displayValue = Number(newValue);
         display.textContent = displayValue;
