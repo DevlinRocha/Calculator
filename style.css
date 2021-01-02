@@ -21,7 +21,7 @@ html {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1.5fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas:
-    "display display display backspace"
+    "display display display display"
     "clear negative percentage operator-divide"
     "number-7 number-8 number-9 operator-multiply"
     "number-4 number-5 number-6 operator-minus"
@@ -30,14 +30,24 @@ html {
     background-color: white;
 }
 
-#display-value {
+#display-container {
     grid-area: display;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: end;
+    background-color: black;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#display-value {
     display: flex;
     flex-direction: row;
     min-height: 100%;
     min-width: 100%;
     color: white;
-    font-size: 50px;
+    font-size: 69px;
     max-height: 100%;
     max-width: 100%;
     justify-content: flex-end;
@@ -51,38 +61,34 @@ button {
     background-color: gray;
     color: black;
 }
-/*
-#display-value {
-    min-height: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    text-align: end;
-    vertical-align: bottom;
-}
-*/
-
-.function-button {
-    background-color: gainsboro;
-}
 
 button:hover {
     opacity: 0.5;
 }
 
-#backspace-button-container {
-    grid-area: backspace;
-    display: flex;
-    justify-content: end;
-    align-items: end;
-    background-color: black;
+.active {
+    background-color: white;
+}
+
+.function-button {
+    background-color: gainsboro;
+}
+
+.operator-button {
+    background-color: orange;
 }
 
 #backspace-button {
     background-color: gainsboro;
-    height: 25%;
-    width: 30%;
-    border-radius: 42%;
-    margin: 0 10px 10px 0;
+    min-height: 42px;
+    min-width: 69px;
+    max-height: 42px;
+    max-width: 69px;
+    border-radius: 100% 0 0 100%;
+    margin: 0 15px 20px 15px;
+    padding-left: 10px;
+    border-top-right-radius: 0%;
+    border-bottom-right-radius: 0%;
 }
 
 #clear-button {
@@ -163,25 +169,8 @@ button:hover {
     grid-area: number-decimal;
 }
 
-#equals-button {
-    grid-area: operator-equals;
-    min-height: 100%;
-    min-width: 100%;
-    background-color: orange;
-}
-
-.operator-button {
-    background-color: orange;
-}
-
-#operator-button-plus {
-    grid-area: operator-plus;
-    min-height: 100%;
-    min-width: 100%;
-}
-
-#operator-button-minus {
-    grid-area: operator-minus;
+#operator-button-divide {
+    grid-area: operator-divide;
     min-height: 100%;
     min-width: 100%;
 }
@@ -192,12 +181,21 @@ button:hover {
     min-width: 100%;
 }
 
-#operator-button-divide {
-    grid-area: operator-divide;
+#operator-button-minus {
+    grid-area: operator-minus;
     min-height: 100%;
     min-width: 100%;
 }
 
-.active {
-    background-color: white;
+#operator-button-plus {
+    grid-area: operator-plus;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+#equals-button {
+    grid-area: operator-equals;
+    min-height: 100%;
+    min-width: 100%;
+    background-color: orange;
 }

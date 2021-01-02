@@ -16,20 +16,20 @@ let operator = '';
 
 // FUNCTIONS:
 
-function add(num1, num2) {
-    return Number(num1) + Number(num2);
-};
-
-function subtract(num1, num2) {
-    return Number(num1) - Number(num2);
+function divide(num1, num2) {
+    return Number(num1) / Number(num2);
 };
 
 function multiply(num1, num2) {
     return Number(num1) * Number(num2);
 };
 
-function divide(num1, num2) {
-    return Number(num1) / Number(num2);
+function subtract(num1, num2) {
+    return Number(num1) - Number(num2);
+};
+
+function add(num1, num2) {
+    return Number(num1) + Number(num2);
 };
 
 function operate(operator) {
@@ -48,6 +48,61 @@ function operate(operator) {
         default:
             return;
     };
+    // The following code should follow this function whenever called:
+    displayValue = Number(num1);
+    display.textContent = Number(displayValue);
+};
+
+
+function backspace() {
+    if (backspaceButton.dataset.work > 0) {
+        let newValue = String(displayValue).slice(0,-1);
+        displayValue = Number(newValue);
+        display.textContent = displayValue;
+    } else {
+        backspaceButton.style.backgroundColor = "red";
+        setTimeout(function() {
+            backspaceButton.style.backgroundColor = "gainsboro";
+        }, 500);
+    };
+};
+
+function allClear() {
+    displayValue = 0;
+    display.textContent = Number(displayValue);
+    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+    num1 = 0;
+    num2 = 0;
+    operator = '';
+};
+
+function negative() {
+    displayValue = Number(displayValue) * -1;
+    display.textContent = displayValue;
+};
+
+function percentage() {
+    displayValue = Number(displayValue) * .01;
+    display.textContent = displayValue;
+};
+
+function operation() {
+    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+    this.classList.toggle('active');
+    operator = this.dataset.value;
+    if (num1 === 0) {
+        num1 = Number(displayValue);
+    } else if (num2 === 0) {
+        num2 = Number(displayValue);
+        num1 = operate(operator);
+        displayValue = Number(num1);
+        display.textContent = Number(displayValue);
+    };
+};
+
+function equals() {
+    num2 = Number(displayValue);
+    num1 = operate(operator);
     displayValue = Number(num1);
     display.textContent = Number(displayValue);
 };
@@ -72,7 +127,6 @@ function updateDisplay(e) {
                 num1 = operate(operator);
                 displayValue = Number(num1);
                 return display.textContent = Number(displayValue);
-                //return num2 = 0;
             }
             return displayValue = 0;
         } else if (key.classList.contains('calculator-button')) {
@@ -98,79 +152,13 @@ function updateDisplay(e) {
     };
 };
 
-function equals() {
-    //if (num1 === 0) {
-        //    num1 = Number(displayValue);
-        //} else if (num2 === 0) {
-            //    num2 = Number(displayValue);
-            //};
-    num2 = Number(displayValue);
-    num1 = operate(operator);
-    displayValue = Number(num1);
-    display.textContent = Number(displayValue);
-    //displayValue = 0;
-    //num2 = 0;
-};
-
-function operation() {
-    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-    this.classList.toggle('active');
-    operator = this.dataset.value;
-    if (num1 === 0) {
-        num1 = Number(displayValue);
-    } else if (num2 === 0) {
-        num2 = Number(displayValue);
-        num1 = operate(operator);
-        displayValue = Number(num1);
-        display.textContent = Number(displayValue);
-        //num2 = 0;
-        }
-    //displayValue = 0;
-}
-
-function allClear() {
-    displayValue = 0;
-    display.textContent = Number(displayValue);
-    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-    num1 = 0;
-    num2 = 0;
-    operator = '';
-}
-
-// NEW FUNCTIONS:
-
-function negative() {
-    displayValue = Number(displayValue) * -1;
-    display.textContent = displayValue;
-}
-
-function percentage() {
-    displayValue = Number(displayValue) * .01;
-    display.textContent = displayValue;
-}
-
-function backspace() {
-    if (backspaceButton.dataset.work > 0) {
-        let newValue = String(displayValue).slice(0,-1);
-        displayValue = Number(newValue);
-        display.textContent = displayValue;
-    } else {
-        backspaceButton.style.backgroundColor = "red";
-        setTimeout(function() {
-            backspaceButton.style.backgroundColor = "gainsboro";
-        }, 500);
-    };
-};
-
-//backspaceButton.style.color = red;
-
 // EVENTS:
 
 window.addEventListener('keydown', updateDisplay);
 backspaceButton.addEventListener('click', backspace);
 clearButton.addEventListener('click', allClear);
-numberButtons.forEach((numberButton) => numberButton.addEventListener('click', updateDisplay));
-equalsButton.addEventListener('click', equals);
-operatorButtons.forEach((operatorButton) => operatorButton.addEventListener('click', operation));
 negativeButton.addEventListener('click', negative);
 percentButton.addEventListener('click', percentage);
+numberButtons.forEach((numberButton) => numberButton.addEventListener('click', updateDisplay));
+operatorButtons.forEach((operatorButton) => operatorButton.addEventListener('click', operation));
+equalsButton.addEventListener('click', equals);
