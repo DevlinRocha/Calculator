@@ -1,5 +1,6 @@
 // DECLARATIONS:
 
+const main = document.querySelector('#main');
 const display = document.querySelector('#display-value');
 const backspaceButton = document.querySelector('#backspace-button');
 const clearButton = document.querySelector('#clear-button');
@@ -210,6 +211,10 @@ function updateDisplay(e) {
         backspaceButton.dataset.work = 1;
     }
 };
+
+if (navigator.userAgent.match(/instagram/i)) {
+    main.style.paddingBottom = "50px";
+}
 
 // EVENTS:
 
