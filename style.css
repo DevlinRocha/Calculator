@@ -67,7 +67,7 @@ button:hover {
 }
 
 .active {
-    background-color: white;
+    background-color: white !important;
 }
 
 .function-button {

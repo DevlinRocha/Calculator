@@ -36,15 +36,15 @@ function operate(operator) {
     backspaceButton.dataset.work = 0;
     switch (operator) {
         case "+":
-            return Number(add(num1, num2));
+            return add(num1, num2);
         case "-":
-            return Number(subtract(num1, num2));
+            return subtract(num1, num2);
         case "*":
         case "x":
         case "X":
-            return Number(multiply(num1, num2));
+            return multiply(num1, num2);
         case "/":
-            return Number(divide(num1, num2));
+            return divide(num1, num2);
         default:
             return;
     };
@@ -55,14 +55,14 @@ function operate(operator) {
 
 
 function backspace() {
-    if (displayValue === 0) {
+    if (displayValue === 0 || displayValue === "0") {
         backspaceButton.style.backgroundColor = "red";
         setTimeout(function() {
             backspaceButton.style.backgroundColor = "gainsboro";
         }, 500);
-    } else if (backspaceButton.dataset.work > 0) {
+    }else if (backspaceButton.dataset.work == 1) {
         let newValue = String(displayValue).slice(0,-1);
-        displayValue = Number(newValue);
+        displayValue = newValue;
         display.textContent = displayValue;
     } else {
         backspaceButton.style.backgroundColor = "red";
@@ -74,16 +74,20 @@ function backspace() {
 
 function allClear() {
     displayValue = 0;
-    display.textContent = Number(displayValue);
+    display.textContent = displayValue;
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     num1 = 0;
     num2 = 0;
     operator = '';
+    backspaceButton.dataset.work = 0;
 };
 
 function negative() {
     displayValue = Number(displayValue) * -1;
     display.textContent = displayValue;
+    if (displayValue == 0) {
+        console.log('fix me later');
+    };
 };
 
 function percentage() {
@@ -97,41 +101,42 @@ function operation() {
     operator = this.dataset.value;
     if (num1 === 0) {
         num1 = Number(displayValue);
+        backspaceButton.dataset.work = 0;
     } else if (num2 === 0) {
         num2 = Number(displayValue);
         num1 = operate(operator);
-        displayValue = Number(num1);
-        display.textContent = Number(displayValue);
+        displayValue = num1;
+        display.textContent = displayValue;
     };
 };
 
 function equals() {
     num2 = Number(displayValue);
     num1 = operate(operator);
-    displayValue = Number(num1);
-    display.textContent = Number(displayValue);
+    displayValue = num1;
+    display.textContent = displayValue;
 };
 
 function updateDisplay(e) {
-    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     let updateValue;
     if (e.type === 'keydown') {
         e.preventDefault();
         let key = document.querySelector(`button[data-key="${e.keyCode}"]`);
         if (key.classList.contains('number-button')) {
             updateValue = key.dataset.value;
-            backspaceButton.dataset.work = 1;
         } else if (key.classList.contains('operator-button')) {
+            // Below is nearly identical to operation() above, but "this" is replaced with "key"
             operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
             key.classList.toggle('active');
             operator = key.dataset.value;
             if (num1 === 0) {
                 num1 = Number(displayValue);
+                backspaceButton.dataset.work = 0;
             } else if (num2 === 0) {
                 num2 = Number(displayValue);
                 num1 = operate(operator);
-                displayValue = Number(num1);
-                return display.textContent = Number(displayValue);
+                displayValue = num1;
+                return display.textContent = displayValue;
             }
             return displayValue = 0;
         } else if (key.classList.contains('calculator-button')) {
@@ -141,20 +146,37 @@ function updateDisplay(e) {
         }
     } else {
         updateValue = this.dataset.value;
-        backspaceButton.dataset.work = 1;
     }
     if (updateValue === '.') {
-        if (String(displayValue).indexOf('.') !== -1) {
+        if (String(displayValue).indexOf('.') !== -1) { // If there is already a decimal
             return;
         } else {
             displayValue += updateValue;
             display.textContent = displayValue;
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            backspaceButton.dataset.work = 1;
         }
+    } else if (updateValue == 0 && displayValue == 0) {
+        if (String(displayValue).indexOf('.') !== -1) { // If there is a decimal
+            displayValue += updateValue;
+            display.textContent = displayValue;
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            backspaceButton.dataset.work = 1;
+            return
+        } else {
+            return;
+        }
+    } else if (backspaceButton.dataset.work == 0) { // If the display is clear
+        displayValue = updateValue;
+        display.textContent = displayValue;
+        operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+        backspaceButton.dataset.work = 1;
     } else {
         displayValue += updateValue;
-        display.textContent = Number(displayValue);
-        displayValue = Number(displayValue);
-    };
+        display.textContent = displayValue;
+        operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+        backspaceButton.dataset.work = 1;
+    }
 };
 
 // EVENTS:
