@@ -212,10 +212,6 @@ function updateDisplay(e) {
     }
 };
 
-if (navigator.userAgent.match(/instagram/i)) {
-    main.style.paddingBottom = "50px";
-}
-
 // EVENTS:
 
 window.addEventListener('keydown', updateDisplay);
