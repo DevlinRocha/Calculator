@@ -1,13 +1,13 @@
 // DECLARATIONS:
 
 const display = document.querySelector('#display-value');
+const backspaceButton = document.querySelector('#backspace-button');
 const clearButton = document.querySelector('#clear-button');
+const negativeButton = document.querySelector('#negative-button');
+const percentButton = document.querySelector('#percent-button');
 const numberButtons = document.querySelectorAll('.number-button');
 const operatorButtons = document.querySelectorAll('.operator-button');
 const equalsButton = document.querySelector('#equals-button');
-const negativeButton = document.querySelector('#negative-button');
-const percentButton = document.querySelector('#percent-button');
-const backspaceButton = document.querySelector('#backspace-button');
 
 let displayValue = 0;
 let num1 = 0;
@@ -33,6 +33,8 @@ function add(num1, num2) {
 };
 
 function operate(operator) {
+    num1 = Number(num1);
+    num2 = Number(num2);
     backspaceButton.dataset.work = 0;
     switch (operator) {
         case "+":
@@ -49,21 +51,25 @@ function operate(operator) {
             return;
     };
     // The following code should follow this function whenever called:
-    displayValue = Number(num1);
-    display.textContent = Number(displayValue);
+    displayValue = num1;
+    display.textContent = displayValue.toLocaleString();
 };
 
-
 function backspace() {
-    if (displayValue === 0 || displayValue === "0") {
+    if (backspaceButton.dataset.work == 0) {
         backspaceButton.style.backgroundColor = "red";
+        backspaceButton.dataset.work = 0;
         setTimeout(function() {
             backspaceButton.style.backgroundColor = "gainsboro";
         }, 500);
-    }else if (backspaceButton.dataset.work == 1) {
+    } else if (backspaceButton.dataset.work == 1) {
         let newValue = String(displayValue).slice(0,-1);
+        if (newValue == '') {
+            newValue = 0;
+            backspaceButton.dataset.work = 0;
+        }
         displayValue = newValue;
-        display.textContent = displayValue;
+        display.textContent = Number(displayValue).toLocaleString();
     } else {
         backspaceButton.style.backgroundColor = "red";
         setTimeout(function() {
@@ -84,15 +90,12 @@ function allClear() {
 
 function negative() {
     displayValue = Number(displayValue) * -1;
-    display.textContent = displayValue;
-    if (displayValue == 0) {
-        console.log('fix me later');
-    };
+    display.textContent = displayValue.toLocaleString();
 };
 
 function percentage() {
     displayValue = Number(displayValue) * .01;
-    display.textContent = displayValue;
+    display.textContent = displayValue.toLocaleString();
 };
 
 function operation() {
@@ -100,21 +103,27 @@ function operation() {
     this.classList.toggle('active');
     operator = this.dataset.value;
     if (num1 === 0) {
-        num1 = Number(displayValue);
+        num1 = displayValue;
         backspaceButton.dataset.work = 0;
-    } else if (num2 === 0) {
-        num2 = Number(displayValue);
-        num1 = operate(operator);
-        displayValue = num1;
-        display.textContent = displayValue;
-    };
+    } else {
+        num2 = displayValue;
+    }
 };
 
 function equals() {
-    num2 = Number(displayValue);
-    num1 = operate(operator);
-    displayValue = num1;
-    display.textContent = displayValue;
+    if (backspaceButton.dataset.work == 0) { // If the display is clear
+        if (num2 == 0) {
+            num2 = displayValue;
+        }
+        num1 = operate(operator);
+        displayValue = num1;
+        display.textContent = displayValue.toLocaleString();
+    } else {
+        num2 = displayValue;
+        num1 = operate(operator);
+        displayValue = num1;
+        display.textContent = displayValue.toLocaleString();
+    };
 };
 
 function updateDisplay(e) {
@@ -130,15 +139,12 @@ function updateDisplay(e) {
             key.classList.toggle('active');
             operator = key.dataset.value;
             if (num1 === 0) {
-                num1 = Number(displayValue);
+                num1 = displayValue;
                 backspaceButton.dataset.work = 0;
-            } else if (num2 === 0) {
-                num2 = Number(displayValue);
-                num1 = operate(operator);
-                displayValue = num1;
-                return display.textContent = displayValue;
+            } else {
+                num2 = displayValue;
             }
-            return displayValue = 0;
+            return;
         } else if (key.classList.contains('calculator-button')) {
             return equals();
         } else if (key.classList.contains('backspace-button')) {
@@ -150,9 +156,13 @@ function updateDisplay(e) {
     if (updateValue === '.') {
         if (String(displayValue).indexOf('.') !== -1) { // If there is already a decimal
             return;
+        } else if (backspaceButton.dataset.work == 0) { // If the display is clear
+            displayValue = "0.";
+            display.textContent = displayValue;
+            backspaceButton.dataset.work = 1;
         } else {
             displayValue += updateValue;
-            display.textContent = displayValue;
+            display.textContent = displayValue.toLocaleString();
             operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
             backspaceButton.dataset.work = 1;
         }
@@ -171,9 +181,14 @@ function updateDisplay(e) {
         display.textContent = displayValue;
         operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
         backspaceButton.dataset.work = 1;
+    } else if (displayValue == "0") {
+        displayValue = updateValue;
+        display.textContent = displayValue;
+        operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+        backspaceButton.dataset.work = 1;
     } else {
         displayValue += updateValue;
-        display.textContent = displayValue;
+        display.textContent = Number(displayValue).toLocaleString();
         operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
         backspaceButton.dataset.work = 1;
     }

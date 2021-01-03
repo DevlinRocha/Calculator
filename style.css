@@ -84,11 +84,9 @@ button:hover {
     min-width: 69px;
     max-height: 42px;
     max-width: 69px;
-    border-radius: 100% 0 0 100%;
+    border-radius: 100% 25% 25% 100%;
     margin: 0 15px 20px 15px;
     padding-left: 10px;
-    border-top-right-radius: 0%;
-    border-bottom-right-radius: 0%;
 }
 
 #clear-button {
