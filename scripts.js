@@ -177,10 +177,17 @@ function updateDisplay(e) {
             return;
         }
     } else if (backspaceButton.dataset.work == 0) { // If the display is clear
-        displayValue = updateValue;
-        display.textContent = displayValue;
-        operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-        backspaceButton.dataset.work = 1;
+        if (1 / Number(displayValue) === -Infinity) { // If there is a negative sign
+            displayValue = '-' + updateValue;
+            display.textContent = displayValue;
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            backspaceButton.dataset.work = 1;
+        } else {
+            displayValue = updateValue;
+            display.textContent = displayValue;
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            backspaceButton.dataset.work = 1;
+        }
     } else if (displayValue == "0") {
         displayValue = updateValue;
         display.textContent = displayValue;
