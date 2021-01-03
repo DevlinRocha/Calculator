@@ -89,8 +89,18 @@ function allClear() {
 };
 
 function negative() {
-    displayValue = Number(displayValue) * -1;
-    display.textContent = displayValue.toLocaleString();
+    if (backspaceButton.dataset.work == 0) { // If the display is clear
+        if (1 / displayValue === -Infinity) { // If the display is already -0
+            displayValue = 0;
+            display.textContent = displayValue;
+        } else {
+            displayValue = -0;
+            display.textContent = displayValue.toLocaleString();
+        }
+    } else {
+        displayValue = Number(displayValue) * -1;
+        display.textContent = displayValue.toLocaleString();
+    };
 };
 
 function percentage() {
