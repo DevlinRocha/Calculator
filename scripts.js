@@ -11,8 +11,8 @@ const operatorButtons = document.querySelectorAll('.operator-button');
 const equalsButton = document.querySelector('#equals-button');
 
 let displayValue = 0;
-let num1 = 0;
-let num2 = 0;
+let num1 = -0;
+let num2 = -0;
 let operator = '';
 
 // FUNCTIONS:
@@ -38,28 +38,25 @@ function operate(operator) {
     num2 = Number(num2);
     backspaceButton.dataset.work = 0;
     switch (operator) {
-        case "+":
-            return add(num1, num2);
-        case "-":
-            return subtract(num1, num2);
-        case "*":
-        case "x":
-        case "X":
-            return multiply(num1, num2);
         case "/":
             return divide(num1, num2);
+        case "*":
+            return multiply(num1, num2);
+        case "-":
+            return subtract(num1, num2);
+        case "+":
+            return add(num1, num2);
         default:
-            return;
+            return num1;
     };
     // The following code should follow this function whenever called:
     displayValue = num1;
-    display.textContent = displayValue.toLocaleString();
+    display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
 };
 
 function backspace() {
     if (backspaceButton.dataset.work == 0) {
         backspaceButton.style.backgroundColor = "red";
-        backspaceButton.dataset.work = 0;
         setTimeout(function() {
             backspaceButton.style.backgroundColor = "gainsboro";
         }, 500);
@@ -70,7 +67,7 @@ function backspace() {
             backspaceButton.dataset.work = 0;
         }
         displayValue = newValue;
-        display.textContent = Number(displayValue).toLocaleString();
+        display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
     } else {
         backspaceButton.style.backgroundColor = "red";
         setTimeout(function() {
@@ -89,51 +86,87 @@ function allClear() {
     backspaceButton.dataset.work = 0;
 };
 
-function negative() {
+function negative() { // This needs more work when being used on a solution to previous problem
     if (backspaceButton.dataset.work == 0) { // If the display is clear
         if (1 / displayValue === -Infinity) { // If the display is already -0
             displayValue = 0;
             display.textContent = displayValue;
         } else {
-            displayValue = -0;
-            display.textContent = displayValue.toLocaleString();
+            displayValue *= -1;
+            display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
         }
     } else {
-        displayValue = Number(displayValue) * -1;
-        display.textContent = displayValue.toLocaleString();
+        num1 = Number(displayValue) * -1;
+        displayValue = num1;
+        display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
     };
 };
 
+//function negative() {
+//    if (backspaceButton.dataset.work == 0 && displayValue == 0) { // If the display is clear
+//        if (1 / displayValue === -Infinity) { // If the display is already -0
+//            displayValue = 0;
+//            display.textContent = displayValue;
+//        } else {
+//            displayValue = -0;
+//            display.textContent = displayValue.toLocaleString(undefined, { maximumSignificantDigits: 9 });
+//        }
+//    } else {
+//        displayValue = Number(displayValue) * -1;
+//        display.textContent = displayValue.toLocaleString(undefined, { maximumSignificantDigits: 9 });
+//    };
+//};
+
 function percentage() {
     displayValue = Number(displayValue) * .01;
-    display.textContent = displayValue.toLocaleString();
+    display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
 };
 
 function operation() {
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     this.classList.toggle('active');
     operator = this.dataset.value;
-    if (num1 === 0) {
+    if (1 / num1 == -Infinity) { // If num1 is 'undefined'
         num1 = displayValue;
         backspaceButton.dataset.work = 0;
-    } else {
+    } else if (backspaceButton.dataset.work == 0) { // If num1 has a value, display is clear \\ Needs work here !be sure to update below too
+        console.log('happens now')
         num2 = displayValue;
-    }
+    } else { // If num1 has a value, and the display is not clear
+        console.log('this')
+        equals();
+        this.classList.toggle('active');
+    };
 };
 
 function equals() {
+    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     if (backspaceButton.dataset.work == 0) { // If the display is clear
-        if (num2 == 0) {
+        console.log('display clear')
+        console.log(num1, num2);
+        if (1 / num1 == -Infinity) { // If num1 is 'undefined'
+            num1 = displayValue;
+        } else if (1 / num2 == -Infinity) { // If num1 has a value but num2 doesn't
             num2 = displayValue;
-        }
+        //if (num2 == 0) {
+        //    num2 = displayValue;
+        };
         num1 = operate(operator);
         displayValue = num1;
-        display.textContent = displayValue.toLocaleString();
-    } else {
-        num2 = displayValue;
+        display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
+    } else { // Mistake is made in here
+        console.log('display not clear')
+        console.log(num1, num2);
+        if (1 / num1 == -Infinity) { // If num1 is 'undefined'
+            num1 = displayValue;
+        } else { // If num1 has a value
+            num2 = displayValue;
+        //if (num2 == 0) {
+        //    num2 = displayValue;
+        };
         num1 = operate(operator);
         displayValue = num1;
-        display.textContent = displayValue.toLocaleString();
+        display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
     };
 };
 
@@ -149,67 +182,81 @@ function updateDisplay(e) {
             operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
             key.classList.toggle('active');
             operator = key.dataset.value;
-            if (num1 === 0) {
+            if (1 / num1 == -Infinity) { // If num1 is 'undefined'
                 num1 = displayValue;
                 backspaceButton.dataset.work = 0;
-            } else {
+            } else if (backspaceButton.dataset.work == 0) { // If num1 has a value, display is clear \\ Needs work here !be sure to update below too
+                console.log('happens now')
                 num2 = displayValue;
-            }
+            } else { // If num1 has a value, and the display is not clear
+                console.log('this')
+                equals();
+                key.classList.toggle('active');
+            };
             return;
         } else if (key.classList.contains('calculator-button')) {
             return equals();
         } else if (key.classList.contains('backspace-button')) {
             return backspace();
         }
-    } else {
+    } else { // Event type is not from keyboard
         updateValue = this.dataset.value;
-    }
+    };
     if (updateValue === '.') {
-        if (String(displayValue).indexOf('.') !== -1) { // If there is already a decimal
-            return;
-        } else if (backspaceButton.dataset.work == 0) { // If the display is clear
+        if (backspaceButton.dataset.work == 0) { // If the display is clear
             displayValue = "0.";
             display.textContent = displayValue;
             backspaceButton.dataset.work = 1;
-        } else {
+        } else if (String(displayValue).indexOf('.') !== -1 || displayValue.length == 9) { // If there is already a decimal or the display is too long
+            return;
+        } else { // updateValue is a decimal, display is not clear
+            let pseudoValue = Number(displayValue).toLocaleString();
+            pseudoValue += updateValue;
+            display.textContent = pseudoValue;
             displayValue += updateValue;
-            display.textContent = displayValue.toLocaleString();
             operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-            backspaceButton.dataset.work = 1;
-        }
+        };
     } else if (updateValue == 0 && displayValue == 0) {
-        if (String(displayValue).indexOf('.') !== -1) { // If there is a decimal
+        if (String(displayValue).indexOf('.') !== -1 && displayValue.length < 9) { // If there is a decimal
             displayValue += updateValue;
             display.textContent = displayValue;
             operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
             backspaceButton.dataset.work = 1;
             return
-        } else {
-            return;
-        }
-    } else if (backspaceButton.dataset.work == 0) { // If the display is clear
-        if (1 / Number(displayValue) === -Infinity) { // If there is a negative sign
-            displayValue = '-' + updateValue;
-            display.textContent = displayValue;
-            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-            backspaceButton.dataset.work = 1;
-        } else {
-            displayValue = updateValue;
-            display.textContent = displayValue;
-            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-            backspaceButton.dataset.work = 1;
-        }
-    } else if (displayValue == "0") {
+        } else { // If there is no decimal
+            return; // Then do nothing
+        };
+    } else if (backspaceButton.dataset.work == 0) { // If the display is clear, updateValue is a non-zero number
         displayValue = updateValue;
         display.textContent = displayValue;
         operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
         backspaceButton.dataset.work = 1;
-    } else {
-        displayValue += updateValue;
-        display.textContent = Number(displayValue).toLocaleString();
-        operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
-        backspaceButton.dataset.work = 1;
-    }
+    //} else if (displayValue == "0") { // BROKE
+    //    displayValue = updateValue;
+    //    display.textContent = displayValue;
+    //    operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+    //    backspaceButton.dataset.work = 1;
+    } else { // updateValue is a non-zero number, display is not clear
+        if (String(displayValue).indexOf('.') !== -1) { // If there is a decimal
+            if (displayValue.length < 10) { // If display isn't too long
+            displayValue += updateValue;
+            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            backspaceButton.dataset.work = 1;
+            } else { // If display is too long
+                return; // Do nothing
+            };
+        } else { // If there is no decimal
+            if (displayValue.length < 9) { // If the display isn't too long
+            displayValue += updateValue;
+            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+            operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
+            backspaceButton.dataset.work = 1;
+            } else { // If the display is too long
+                return; // Do nothing
+            };
+        };
+    };
 };
 
 // EVENTS:
