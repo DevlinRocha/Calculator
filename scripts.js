@@ -52,6 +52,7 @@ function operate(operator) {
             break;
         default:
             console.error('Default operator')
+            num1 = add(num1, num2);
     };
     displayValue = num1;
     display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
@@ -74,13 +75,23 @@ function backspace() {
                 break;
             case (newValue === ''):
                 newValue = 0;
+                displayValue = newValue;
+                display.textContent = displayValue;
                 backspaceButton.dataset.work = 0;
-                break;
+                return;
             case (newValue === '-'):
                 newValue = '-0';
         };
-        displayValue = newValue;
-        display.textContent = displayValue;
+        if (newValue.indexOf('.') === -1) { // If there is no decimal
+            displayValue = newValue;
+            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+        } else { // If there is a decimal
+            const splitNumber = newValue.split('.');
+            const wholeNumber = Number(splitNumber[0]).toLocaleString();
+            const fractionalNumber = '.' + splitNumber[1];
+            display.textContent = wholeNumber + fractionalNumber;
+            displayValue = newValue;
+        };
     };
     switch (true) {
         case (1 / displayValue === -Infinity): // The display was -0
@@ -98,6 +109,18 @@ function backspace() {
             yesWork();
     };
 };
+
+
+if (String(displayValue).indexOf('.') === -1) { // If there is no decimal
+    displayValue += '0';
+    display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+} else {
+    const splitNumber = displayValue.split('.');
+    const wholeNumber = Number(splitNumber[0]).toLocaleString();
+    const fractionalNumber = '.' + splitNumber[1] + '0';
+    display.textContent = wholeNumber + fractionalNumber;
+    displayValue += 0;
+}
 
 function allClear() {
     displayValue = 0;
@@ -131,15 +154,17 @@ function negative() {
         if (displayValue == 0 && String(displayValue).indexOf('.') == -1) { // If display value == 0 and has no decimal
             reverseZero();
         } else { // displayValue is not 0 or has a decimal
+            let inverse;
             if (String(displayValue).indexOf('-') == -1) { // If displayValue doesn't have '-' sign
                 num1 *= -1;
                 displayValue = '-' + displayValue;
-                display.textContent = displayValue;
+                inverse = '-' + display.textContent;
             } else { // If displayValue does have '-' sign
                 num1 *= -1;
                 displayValue = String(displayValue).replace('-','');
-                display.textContent = displayValue;
+                inverse = String(display.textContent).replace('-', '');
             };
+            display.textContent = inverse;
         };
     };
 };
@@ -201,8 +226,8 @@ function equals () {
 
 function inputDecimal() {
     if (String(displayValue).indexOf('.') === -1) { // If the display doesn't have a decimal
+        display.textContent = (Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 })) + '.';
         displayValue += '.';
-        display.textContent = displayValue;
         backspaceButton.dataset.work = 1;
     } else { // If the display already has a decimal
         return; // Do nothing
@@ -212,9 +237,31 @@ function inputDecimal() {
 function inputZero() {
     if (displayValue == 0 && String(displayValue).indexOf('.') === -1) { // If the display is == 0 and has no decimal
         return; // Do nothing
-    } else {
+    } else if (displayValue == 0 && String(displayValue).indexOf('.') !== -1) { // If the display is
         displayValue += '0';
-        display.textContent = displayValue;
+        display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+    };
+};
+
+function inputZero() {
+    if (displayValue == 0) {
+        if (String(displayValue).indexOf('.') === -1) {
+            return; // Do nothing
+        } else {
+            displayValue += '0';
+            display.textContent = displayValue;
+        };
+    } else { 
+        if (String(displayValue).indexOf('.') === -1) { // If there is no decimal
+            displayValue += '0';
+            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+        } else {
+            const splitNumber = displayValue.split('.');
+            const wholeNumber = Number(splitNumber[0]).toLocaleString();
+            const fractionalNumber = '.' + splitNumber[1] + '0';
+            display.textContent = wholeNumber + fractionalNumber;
+            displayValue += 0;
+        }
     };
 };
 
@@ -226,9 +273,9 @@ function inputNumber(input) {
                 displayValue = input;
             } else { // If there is a negative sign
                 displayValue = '-' + input;
-                backspaceButton.dataset.work = 1;
             }
             display.textContent = displayValue;
+            backspaceButton.dataset.work = 1;
             break;
         case (displayValue == 0):
             if (1 / displayValue === -Infinity) { // If display is -0
@@ -245,15 +292,17 @@ function inputNumber(input) {
                 };
             };
             display.textContent = displayValue;
+            backspaceButton.dataset.work = 1;
             break;
         default:
             console.log('default')
             displayValue += input;
-            display.textContent = displayValue;
+            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+            backspaceButton.dataset.work = 1; // Just in case
     };
 };
 
-function updateDisplay(e) {
+function userInput(e) {
     let input;
     if (e.type === 'keydown') {
         e.preventDefault();
@@ -287,11 +336,11 @@ function updateDisplay(e) {
 
 // EVENTS:
 
-window.addEventListener('keydown', updateDisplay);
+window.addEventListener('keydown', userInput);
 backspaceButton.addEventListener('click', backspace);
 clearButton.addEventListener('click', allClear);
 negativeButton.addEventListener('click', negative);
 percentButton.addEventListener('click', percentage);
-numberButtons.forEach((numberButton) => numberButton.addEventListener('click', updateDisplay));
+numberButtons.forEach((numberButton) => numberButton.addEventListener('click', userInput));
 operatorButtons.forEach((operatorButton) => operatorButton.addEventListener('click', operation));
 equalsButton.addEventListener('click', equals);
