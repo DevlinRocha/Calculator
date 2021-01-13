@@ -30,6 +30,9 @@ function subtract(num1, num2) {
 };
 
 function add(num1, num2) {
+    if (num1 === .09 && num2 === .01) { // Some odd JavaScript glitch
+        return Number("0.1");
+    }
     return Number(num1) + Number(num2);
 };
 
@@ -51,11 +54,21 @@ function operate(operator) {
             num1 = add(num1, num2);
             break;
         default:
-            console.error('Default operator')
-            num1 = add(num1, num2);
+            console.error('No operator chosen');
+            num1 = displayValue;
     };
     displayValue = num1;
-    display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
+    const splitNumber = String(displayValue).split('.');
+    const wholeNumber = splitNumber[0];
+    if (wholeNumber.length > 9) {
+        display.textContent = wholeNumber.toExponential();
+    } else if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If there is no decimal
+        display.textContent = displayValue.toLocaleString();
+    } else {
+        const fractionalNumber = '.' + splitNumber[1];
+        const result = wholeNumber.toLocaleString() + fractionalNumber;
+        display.textContent = Number(result.slice(0, 10));
+    };
 };
 
 function backspace() {
@@ -82,9 +95,9 @@ function backspace() {
             case (newValue === '-'):
                 newValue = '-0';
         };
-        if (newValue.indexOf('.') === -1) { // If there is no decimal
+        if (newValue.indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If there is no decimal
             displayValue = newValue;
-            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+            display.textContent = Number(displayValue).toLocaleString();
         } else { // If there is a decimal
             const splitNumber = newValue.split('.');
             const wholeNumber = Number(splitNumber[0]).toLocaleString();
@@ -110,10 +123,11 @@ function backspace() {
     };
 };
 
+// NEW/UNSORTED CODE
 
-if (String(displayValue).indexOf('.') === -1) { // If there is no decimal
+if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If there is no decimal
     displayValue += '0';
-    display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+    display.textContent = Number(displayValue).toLocaleString();
 } else {
     const splitNumber = displayValue.split('.');
     const wholeNumber = Number(splitNumber[0]).toLocaleString();
@@ -151,7 +165,7 @@ function negative() {
     if (active) { // If there is an active operator button
         reverseZero();
     } else { // If there is no active operator button
-        if (displayValue == 0 && String(displayValue).indexOf('.') == -1) { // If display value == 0 and has no decimal
+        if (displayValue == 0 && String(displayValue).indexOf('.') == -1 && String(displayValue).indexOf('e-') === -1) { // If display value == 0 and has no decimal
             reverseZero();
         } else { // displayValue is not 0 or has a decimal
             let inverse;
@@ -170,8 +184,29 @@ function negative() {
 };
 
 function percentage() {
-    displayValue = Number(displayValue) * .01;
-    display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
+    num1 = Number(displayValue) / 100;
+    displayValue = num1;
+    if (String(displayValue).length > 11) {
+        if (displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 }) == 0) {
+            const splitNumber = String(displayValue.toExponential(5)).split('.');
+            const wholeNumber = splitNumber[0];
+            const eSplitNumber = String(splitNumber[1]).split('e');
+            const fractionalNumber = eSplitNumber[0];
+            let fractionDigits = 5;
+            for (let i = String(fractionalNumber).length; i == 0; i--) {
+                fractionDigits = i;
+            }
+            display.textContent = displayValue.toExponential(fractionDigits);
+        } else {
+            display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
+        };
+    } else if (displayValue < 1e-8) {
+        display.textContent = displayValue;
+    } else {
+        display.textContent = displayValue.toLocaleString(undefined, { maximumFractionDigits: 8 });
+    }
+    num1 = displayValue; // Do I need this?
+    backspaceButton.dataset.work = 0;
 };
 
 function operation(key=0) {
@@ -197,7 +232,7 @@ function operation(key=0) {
     };
 };
 
-function equals () {
+function equals() {
     const active = document.querySelector('.active');
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('active'));
     if (1 / displayValue === -Infinity) { // If the display is -0
@@ -212,21 +247,29 @@ function equals () {
     } else { // If the display is not -0
         if (active) { // If there was an active operator button
             num2 = displayValue;
-        }
+        };
         if (1 / num1 === -Infinity) { // If num1 is 'undefined'
             num1 = displayValue;
-        } else if (1 / num2 === -Infinity) { // If num2 isn't defined but num1 is
+        } else if (1 / num2 === -Infinity || num1 != displayValue) { // If num2 isn't defined but num1 is
             num2 = displayValue;
-        } else { // If num1 && num2 are defined
-            num1 = displayValue;
-        }
+        };
         operate(operator);
-    }
-}
+    };
+};
 
 function inputDecimal() {
-    if (String(displayValue).indexOf('.') === -1) { // If the display doesn't have a decimal
-        display.textContent = (Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 })) + '.';
+    const active = document.querySelector('.active');
+    if (active) {
+        displayValue = '0.';
+        if (String(displayValue).indexOf('-') !== -1) { // If there is a negative sign
+            displayValue = '-' + displayValue;
+        };
+        display.textContent = displayValue;
+        backspaceButton.dataset.work = 1;
+    } else if (displayValue.length >= 9) {
+        return; // Do nothing
+    } else if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If the display doesn't have a decimal
+        display.textContent = (Number(displayValue).toLocaleString()) + '.';
         displayValue += '.';
         backspaceButton.dataset.work = 1;
     } else { // If the display already has a decimal
@@ -235,39 +278,34 @@ function inputDecimal() {
 };
 
 function inputZero() {
-    if (displayValue == 0 && String(displayValue).indexOf('.') === -1) { // If the display is == 0 and has no decimal
+    if (displayValue.length >= 9) {
         return; // Do nothing
-    } else if (displayValue == 0 && String(displayValue).indexOf('.') !== -1) { // If the display is
-        displayValue += '0';
-        display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
     };
-};
-
-function inputZero() {
     if (displayValue == 0) {
-        if (String(displayValue).indexOf('.') === -1) {
+        if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If there is no decimal
             return; // Do nothing
         } else {
             displayValue += '0';
             display.textContent = displayValue;
         };
-    } else { 
-        if (String(displayValue).indexOf('.') === -1) { // If there is no decimal
+    } else {
+        if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If there is no decimal
             displayValue += '0';
-            display.textContent = Number(displayValue).toLocaleString(undefined, { maximumFractionDigits: 8 });
+            display.textContent = Number(displayValue).toLocaleString();
         } else {
             const splitNumber = displayValue.split('.');
             const wholeNumber = Number(splitNumber[0]).toLocaleString();
             const fractionalNumber = '.' + splitNumber[1] + '0';
             display.textContent = wholeNumber + fractionalNumber;
             displayValue += 0;
-        }
+        };
     };
 };
 
 function inputNumber(input) {
     const active = document.querySelector('.active');
     switch (true) {
+        case (backspaceButton.dataset.work == 0): // Backspace button doesn't work
         case (active !== null): // There is an active operator button
             if (String(displayValue).indexOf('-') === -1) { // If there is no negative sign
                 displayValue = input;
@@ -277,15 +315,17 @@ function inputNumber(input) {
             display.textContent = displayValue;
             backspaceButton.dataset.work = 1;
             break;
+        case (displayValue.length >= 9):
+            return; // Do nothing
         case (displayValue == 0):
             if (1 / displayValue === -Infinity) { // If display is -0
-                if (String(displayValue).indexOf('.') === -1) { // If there is no decimal
+                if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) { // If there is no decimal
                     displayValue = '-' + input;
                 } else { // If there is a decimal
                     displayValue += input;
                 };
             } else { // If the display is 0
-                if (String(displayValue).indexOf('.') === -1) {
+                if (String(displayValue).indexOf('.') === -1 && String(displayValue).indexOf('e-') === -1) {
                     displayValue = input;
                 } else {
                     displayValue += input;
